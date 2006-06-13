@@ -3,6 +3,7 @@
 # License: Same as Perl (GPL or Artistic)
 
 use strict;
+use Cwd;
 use Win32API::File qw(:ALL);
 use Win32::Sound;
 use Time::HiRes qw(gettimeofday sleep);
@@ -24,7 +25,10 @@ USAGE
     exit;
 }
 
+my $cwd = cwd;
 $threshold ||= 3.0;
+
+warn "Ready. Waiting for your shake!\n";
 
 sub get_pos {
     my $file = createFile("//./ShockMgr", "r ke") or die "Can't get ShockMgr device";
@@ -76,6 +80,8 @@ while (my($x, $y) = get_pos) {
     sleep 0.1;
 }
 
+my %par_tmp;
+
 sub play_sound {
     my $volume = shift;
     my $num = int rand 5;
@@ -83,7 +89,7 @@ sub play_sound {
     $volume = int(65535 * min($volume * 0.1, 1));
     warn "playing $filename in $volume" if $debug;
     Win32::Sound::Volume($volume);
-    Win32::Sound::Play($filename, SND_ASYNC);
+    Win32::Sound::Play(File::Spec->catfile($cwd, "sound", $filename), SND_ASYNC);
 }
 
 sub stddev(@) {
