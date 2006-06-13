@@ -86,7 +86,7 @@ sub play_sound {
     my $volume = shift;
     my $num = int rand 5;
     my $filename = "hit$num.wav";
-    $volume = int(65535 * min($volume * 0.1, 1));
+    $volume = int(65535 * min($volume / 15, 1));
     warn "playing $filename in $volume" if $debug;
     Win32::Sound::Volume($volume);
     Win32::Sound::Play(File::Spec->catfile($cwd, "sound", $filename), SND_ASYNC);
