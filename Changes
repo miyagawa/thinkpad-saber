@@ -1,0 +1,10 @@
+Changelog for ThinkPad Saber
+
+== 0.20 (2006/06/14 15:00 JST) ==
+
+  * Create GUI binary.
+  * Now it uses NotifyIcon to shutdown. No more console!
+
+== 0.10 (2006/06/14 04:00 JST) ==
+
+  * Initial release
