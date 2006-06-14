@@ -1,5 +1,9 @@
 Changelog for ThinkPad Saber
 
+== 0.21 (2006/06/14 15:17 JST) ==
+
+  * Don't include Win32::API to the executable
+
 == 0.20 (2006/06/14 15:00 JST) ==
 
   * Create GUI binary.
