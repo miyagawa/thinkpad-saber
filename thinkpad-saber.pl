@@ -6,7 +6,6 @@ use strict;
 use Cwd;
 use File::Spec;
 use Win32API::File qw(:ALL);
-use Win32::API;
 use Win32::GUI ();
 use Win32::Sound;
 use Time::HiRes qw(gettimeofday sleep);
