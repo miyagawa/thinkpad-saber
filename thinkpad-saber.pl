@@ -6,6 +6,8 @@ use strict;
 use Cwd;
 use File::Spec;
 use Win32API::File qw(:ALL);
+use Win32::API;
+use Win32::GUI ();
 use Win32::Sound;
 use Time::HiRes qw(gettimeofday sleep);
 use List::Util qw(max min);
@@ -29,7 +31,43 @@ USAGE
 my $cwd = cwd;
 $threshold ||= 3.0;
 
-warn "Ready. Waiting for your shake!\n";
+# dummy main window
+my $main = Win32::GUI::Window->new(
+    -name => 'Main',
+    -text => 'ThinkPad Saber',
+    -width => 200,
+    -height => 200,
+);
+
+my $icon_file = $INC{"PAR.pm"}
+    ? do { 
+        my($fh, $is_new, $fn) = PAR::_tempfile("tpsaber.ico");
+        my $data = PAR::read_file("resources/tpsaber.ico");
+        print $fh $data;
+        close $fh;
+        $fn;
+    } : "resources/tpsaber.ico";
+
+my $icon = Win32::GUI::Icon->new($icon_file);
+my $notify_icon = $main->AddNotifyIcon(
+    -name => 'NI', -id => 1,
+    -icon => $icon, -tip => 'ThinkPad Saber',
+);
+
+my $popup = Win32::GUI::Menu->new(
+    "" => "SystemMenu",
+    ">&Exit" => "Exit",
+); 
+
+sub NI_RightClick {
+    my($x, $y) = Win32::GUI::GetCursorPos();
+    $main->TrackPopupMenu($popup->{SystemMenu}, $x, $y);
+    -1;
+}
+
+sub Exit_Click {
+    exit;
+} 
 
 sub get_pos {
     my $file = createFile("//./ShockMgr", "r ke") or die "Can't get ShockMgr device";
@@ -78,7 +116,8 @@ while (my($x, $y) = get_pos) {
     }
     
     warn "$mode $dev" if $debug;
-    sleep 0.1;
+    Win32::GUI::DoEvents();
+    sleep 0.05;
 }
 
 my %par_tmp;
