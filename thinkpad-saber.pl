@@ -12,6 +12,8 @@ use Time::HiRes qw(gettimeofday sleep);
 use List::Util qw(max min);
 use Getopt::Long;
 
+our $VERSION = "0.22";
+
 GetOptions('--debug', \my $debug, '--threshold=s' => \my $threshold, "--help" => \my $help);
 Getopt::Long::Configure("bundling"); # allows -d -t
 
@@ -75,6 +77,12 @@ sub get_pos {
     return @data[1, 0];
 }
 
+# main program
+Win32::Sound::Volume(65535, 65535);
+Win32::Sound::Play('sound/start0.wav');
+
+Win32::Sound::Play('sound/idle1.wav', SND_LOOP|SND_ASYNC);
+
 my $depth = 8;
 
 my(@xhist, @yhist);
@@ -116,6 +124,9 @@ while (my($x, $y) = get_pos) {
     
     warn "$mode $dev" if $debug;
     Win32::GUI::DoEvents();
+    
+    my $idle = int(rand 100) % 2 ? 1 :0;
+    Win32::Sound::Play("sound/idle$idle.wav", SND_NOSTOP|SND_LOOP|SND_ASYNC);
     sleep 0.05;
 }
 
@@ -123,11 +134,13 @@ my %par_tmp;
 
 sub play_sound {
     my $volume = shift;
-    my $num = int rand 5;
-    my $filename = "hit$num.wav";
-    $volume = int(65535 * min($volume / 15, 1));
+    
+    my $hit = $volume > 10 ? "hit" : "swing";
+    my $num = int rand ($hit ? 5 : 8);
+    my $filename = "$hit$num.wav";
+#    $volume = int(65535 * min($volume / 15, 1));
     warn "playing $filename in $volume" if $debug;
-    Win32::Sound::Volume($volume);
+#    Win32::Sound::Volume($volume);
     Win32::Sound::Play(File::Spec->catfile($cwd, "sound", $filename), SND_ASYNC);
 }
 
