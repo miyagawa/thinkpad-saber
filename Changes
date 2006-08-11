@@ -1,5 +1,9 @@
 Changelog for ThinkPad Saber
 
+== 0.23 (2006/08/11 18:51 JST) ==
+
+  * Plays sound/off0.wav when the program exits. Suggested by Bryan Parsons
+
 == 0.22 (2006/06/15 10:54 JST) ==
 
   * Behaves more like Lightsaber with idle sounds
