@@ -12,7 +12,7 @@ use Time::HiRes qw(gettimeofday sleep);
 use List::Util qw(max min);
 use Getopt::Long;
 
-our $VERSION = "0.22";
+our $VERSION = "0.23";
 
 GetOptions('--debug', \my $debug, '--threshold=s' => \my $threshold, "--help" => \my $help);
 Getopt::Long::Configure("bundling"); # allows -d -t
@@ -67,8 +67,9 @@ sub NI_RightClick {
 }
 
 sub Exit_Click {
+    Win32::Sound::Play('sound/off0.wav');
     exit;
-} 
+}
 
 sub get_pos {
     my $file = createFile("//./ShockMgr", "r ke") or die "Can't get ShockMgr device";
